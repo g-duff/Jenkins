@@ -9,6 +9,12 @@ services:
                 volumes:
                         - jenkins-data:/var/jenkins_home
                         - jenkins-certs:/certs/client:ro
+        jenkins-simpleagent:
+                image: "jenkins/ssh-agent"
+                expose:
+                        - "20"
+                environment:
+                        - JENKINS_AGENT_SSH_PUBKEY
 
 volumes:
         jenkins-data:
