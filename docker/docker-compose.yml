@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-        jenkins-server:
+        jenkins-blueocean:
                 image: "jenkins/jenkins:lts-jdk11"
                 ports:
                         - "8080:8080"
