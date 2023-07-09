@@ -5,7 +5,13 @@ networks:
 
 services:
         blueocean:
-                image: "jenkins/jenkins:lts-jdk11"
+                build:
+                        context: "."
+                        dockerfile: "./blueocean.Dockerfile"
+                environment:
+                        - DOCKER_CERT_PATH=/certs/client
+                        - DOCKER_HOST=tcp://docker:2376
+                        - DOCKER_TLS_VERIFY=1
                 ports:
                         - "8080:8080"
                         - "50000:50000"
@@ -24,8 +30,25 @@ services:
                         jenkins:
                                 aliases:
                                         - python-agent
+        jenkins-docker:
+                command: "--storage-driver overlay2"
+                environment:
+                        - DOCKER_CERT_PATH=/certs/client
+                        - DOCKER_HOST=tcp://docker:2376
+                        - DOCKER_TLS_CERTDIR=/certs
+                        - DOCKER_TLS_VERIFY=1
+                image: "docker:dind"
+                networks:
+                        jenkins:
+                                aliases:
+                                        - docker
+                ports:
+                        - "2376:2376"
+                privileged: true
+                volumes:
+                        - jenkins-data:/var/jenkins_home
+                        - jenkins-certs:/certs/client
 
 volumes:
         jenkins-data:
         jenkins-certs:
-
